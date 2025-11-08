@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday 🎂</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Background Music (do NOT autoplay — will play on click) -->
+  <audio id="birthdayMusic" loop>
+    <source src="happy-birthday-334876.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="overlay"></div>
+
+  <div class="container">
+    <div class="photo-gallery">
+      <div class="photo-frame">
+        <img src="aditi1.jpg" alt="Birthday Girl 1" />
+      </div>
+    </div>
+
+    <!-- Surprise Button -->
+    <div class="controls">
+      <button id="surpriseBtn" class="surprise-btn" aria-pressed="false">🎁 Surprise!</button>
+    </div>
+
+    <!-- ✨ Unique Date & Time Line -->
+    <div id="birthdayDate" class="birthday-date"></div>
+
+    <h1>🎂 Happy Birthday <span id="name">Boss😎</span></h1>
+    <h2>May your every day be as beautiful as your smile.
+Stay healthy and always keep shining! 🌟💝</h2>
+
+    <p class="from">— With Love, <strong>Anshul Singh Rajpoot ❤️</strong></p>
+  </div>
+
+  <div class="hearts"></div>
+
+  <!-- Surprise overlay (hidden until button click) -->
+  <div id="surpriseOverlay" class="surprise-overlay" aria-hidden="true">
+    <div class="surprise-card">
+      <h2>🎉 Surprise! 🎉</h2>
+      <p> enjoy your special song 💖</p>
+      <button id="closeSurprise" class="close-btn">Close</button>
+    </div>
+    <!-- simple confetti pieces -->
+    <div class="confetti"></div>
+  </div>
+
+  <script>
+    // Floating hearts animation (existing)
+    const heartsContainer = document.querySelector('.hearts');
+    setInterval(() => {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (4 + Math.random() * 3) + 's';
+      heartsContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }, 400);
+
+    // Date/time (fixed date + live time)
+    function updateDateTime() {
+      const dateElement = document.getElementById('birthdayDate');
+      const fixedDate = "Thursday 13 November , 2025"; // fixed birthday
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      dateElement.innerHTML = `
+        <span class="date-text">🎉 Today is ${fixedDate}</span><br>
+        <span class="celebrate-text">A Special Day to Celebrate You 💖</span>
+      `;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // Surprise button logic
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const birthdayMusic = document.getElementById('birthdayMusic');
+    const surpriseOverlay = document.getElementById('surpriseOverlay');
+    const closeSurprise = document.getElementById('closeSurprise');
+
+    surpriseBtn.addEventListener('click', () => {
+      // Play music (user interaction required by browsers)
+      birthdayMusic.currentTime = 0;
+      birthdayMusic.play().catch(err => {
+        // if play fails, still show overlay
+        console.warn('Audio play failed:', err);
+      });
+
+      // Show overlay
+      surpriseOverlay.classList.add('visible');
+      surpriseOverlay.setAttribute('aria-hidden', 'false');
+
+      // disable button after click to avoid multiple triggers
+      surpriseBtn.disabled = true;
+      surpriseBtn.setAttribute('aria-pressed', 'true');
+
+      // tiny extra: make confetti burst
+      burstConfetti();
+    });
+
+    closeSurprise.addEventListener('click', () => {
+      surpriseOverlay.classList.remove('visible');
+      surpriseOverlay.setAttribute('aria-hidden', 'true');
+    });
+
+    // Small confetti burst function (creates many colored pieces)
+    function burstConfetti() {
+      const confettiContainer = document.querySelector('.confetti');
+      confettiContainer.innerHTML = ''; // clear
+
+      const colors = ['#ff577f', '#ffd166', '#6ee7b7', '#a78bfa', '#ffb3d9'];
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.classList.add('confetti-piece');
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.left = (20 + Math.random() * 60) + '%';
+        piece.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+        piece.style.animationDelay = (Math.random() * 0.5) + 's';
+        confettiContainer.appendChild(piece);
+        // remove after animation
+        setTimeout(() => piece.remove(), 5000);
+      }
+    }
+
+    // Also allow body click to start music if user clicked elsewhere
+    document.body.addEventListener('click', () => {
+      // Do nothing here to avoid replaying — main play on button click
+    }, { once: true });
+  </script>
+
+</body>
+</html>
